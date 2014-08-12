@@ -19,8 +19,8 @@ Reference
 
 ### GSON.parse(json (string), [strict (bool)])
 
-  json: the string to parse
-  strict: whether or not to use strict parsing. Default value is true.
+  json: the string to parse  
+  strict: whether or not to use strict parsing. Default value is true.  
 
 Parses the requested JSON and returns the parsed object.
 Throws Errors if an error occurs during parsing.
@@ -45,7 +45,7 @@ These two concepts are NOT supported currently, as personally I did not need the
 
 ### GSON.stringify(obj)
 
-  obj: object to stringify
+  obj: object to stringify  
 
 This is just an alias for JSON.stringify. Currently, nothing special
 is done to the stringification procedure. In the future, the above might
