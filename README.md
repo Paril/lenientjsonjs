@@ -45,16 +45,16 @@ These two concepts are NOT supported currently, as personally I did not need the
 
 ### GSON.stringify(obj (any), [options (dictionary OR boolean)])
 
-  obj: object to stringify
-  options: either a property bag of options to use in the stringification process, false, or left out. Default value is undefined. Setting to false enables some very loose leniency (unquoted/single-quoted keys/strings & NaNs/infinites).
-    valid properties:
-      keyPairSeparator (string): the separator string used between key/value pairs. Default is :
-      arraySeparator (string): the separator string used between array elements. Default is ,
-      allowNaNInfinite (bool): whether or not NaNs and Infinites will be stringified as-is. Default is false (outputs nulls).
-      unquotedKeys (bool): whether or not keys in key/value pairs can be unquoted, if possible. Default is false.
-      unquotedKeys (bool): whether or not string values can be unquoted, if possible. Default is false.
-      preferSingleQuotedKeys (bool): whether or not keys in key/value pairs can use the single quote character, if possible. Default is false.
-      preferSingleQuotedStrings (bool): whether or not string values can use the single quote character, if possible. Default is false.
+  obj: object to stringify  
+  options: either a property bag of options to use in the stringification process, false, or left out. Default value is undefined. Setting to false enables some very loose leniency (unquoted/single-quoted keys/strings & NaNs/infinites).  
+    valid properties:  
+      keyPairSeparator (string): the separator string used between key/value pairs. Default is :  
+      arraySeparator (string): the separator string used between array elements. Default is ,  
+      allowNaNInfinite (bool): whether or not NaNs and Infinites will be stringified as-is. Default is false (outputs nulls).  
+      unquotedKeys (bool): whether or not keys in key/value pairs can be unquoted, if possible. Default is false.  
+      unquotedKeys (bool): whether or not string values can be unquoted, if possible. Default is false.  
+      preferSingleQuotedKeys (bool): whether or not keys in key/value pairs can use the single quote character, if possible. Default is false.  
+      preferSingleQuotedStrings (bool): whether or not string values can use the single quote character, if possible. Default is false.  
 
 Returns a string representation of the object passed to it.
 
