@@ -1,7 +1,7 @@
 lenientjsonjs
 =============
 
-A small library for JS containing a GSON lenient-compatible JSON parser.
+A small library for JS containing a GSON lenient-compatible JSON parser and stringifier.
 I personally needed this for Minecraft JSON parsing in other languages.
 
 Prerequisites
@@ -43,13 +43,20 @@ These two concepts are NOT supported currently, as personally I did not need the
 * Streams that include multiple top-level values. With strict parsing, each stream must contain exactly one top-level value.
 * Top-level values of any type. With strict parsing, the top-level value must be an object or an array.
 
-### GSON.stringify(obj)
+### GSON.stringify(obj (any), [options (dictionary OR boolean)])
 
-  obj: object to stringify  
+  obj: object to stringify
+  options: either a property bag of options to use in the stringification process, false, or left out. Default value is undefined. Setting to false enables some very loose leniency (unquoted/single-quoted keys/strings & NaNs/infinites).
+    valid properties:
+      keyPairSeparator (string): the separator string used between key/value pairs. Default is :
+      arraySeparator (string): the separator string used between array elements. Default is ,
+      allowNaNInfinite (bool): whether or not NaNs and Infinites will be stringified as-is. Default is false (outputs nulls).
+      unquotedKeys (bool): whether or not keys in key/value pairs can be unquoted, if possible. Default is false.
+      unquotedKeys (bool): whether or not string values can be unquoted, if possible. Default is false.
+      preferSingleQuotedKeys (bool): whether or not keys in key/value pairs can use the single quote character, if possible. Default is false.
+      preferSingleQuotedStrings (bool): whether or not string values can use the single quote character, if possible. Default is false.
 
-This is just an alias for JSON.stringify. Currently, nothing special
-is done to the stringification procedure. In the future, the above might
-be good to support in the reverse operation.
+Returns a string representation of the object passed to it.
 
 License
 ============

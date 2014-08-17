@@ -1,6 +1,7 @@
 var GSON = GSON || (function()
 {
-	var _json ;
+	// PARSE CODE
+	var _json;
 	var _pos;
 	var _len;
 
@@ -391,9 +392,192 @@ var GSON = GSON || (function()
 		// todo: "Streams that include multiple top-level values. With strict parsing, each stream must contain exactly one top-level value."
 		return _parseObjectOrArray();
 	}
+	
+	// STRINGIFY CODE
+	var _options;
+	var _str;
+	
+	function _opt(name, def) { if (!_options || _options[name] === undefined) return def; return _options[name]; }
+
+	function _validKey(key)
+	{
+		try
+		{
+			eval("var " + key + ";");
+			return true;
+		}
+		catch(e)
+		{
+			return false;
+		}
+	}
+	
+	function _stringifyNull()
+	{
+		_str += 'null';
+	}
+				
+	function _stringifyObject(object)
+	{
+		// start object
+		_str += '{';
+		
+		// properties
+		var props = Object.getOwnPropertyNames(object);
+		
+		// options used
+		var keyPairSeparator = _opt('keyPairSeparator', ':');
+		
+		for (var i = 0; i < props.length; ++i)
+		{
+			if (i !== 0)
+				_str += ',';
+			
+			_stringifyString(props[i], true);
+			_str += keyPairSeparator;
+			_stringifyAny(object[props[i]]);
+		}
+		
+		// end object
+		_str += '}';
+	}
+	
+	function _stringifyArray(array)
+	{
+		// start array
+		_str += '[';
+		
+		// options used
+		var arraySeparator = _opt('arraySeparator', ',');
+		
+		for (var i = 0; i < array.length; ++i)
+		{
+			if (i !== 0)
+				_str += arraySeparator;
+			
+			_stringifyAny(array[i]);
+		}
+		
+		// end array
+		_str += ']';
+	}
+	
+	function _stringifyNumber(number)
+	{
+		// options used
+		var allowNaNInfinite = _opt('allowNaNInfinite', false);
+		
+		if (!allowNaNInfinite && (isNaN(number) || !isFinite(number)))
+		{
+			_stringifyNull();
+			return;
+		}
+		
+		_str += number.toString();
+	}
+	
+	function _stringifyBoolean(bool)
+	{
+		_str += (bool) ? 'true' : 'false';
+	}
+	
+	function _fixString(str)
+	{
+		return str
+					.replace('\\', '\\\\')
+					.replace("\b", "\\b")
+					.replace("\f", "\\f")
+					.replace("\n", "\\n")
+					.replace("\r", "\\r")
+					.replace("\t", "\\t")
+					.replace("\v", "\\v");
+	}
+	
+	function _stringifyString(input, isKey)
+	{
+		var unquotedKeys, preferSingleQuotedKeys;
+			
+		if (isKey)
+		{
+			unquotedKeys = _opt('unquotedKeys', false);
+			preferSingleQuotedKeys = _opt('preferSingleQuotedKeys', false);
+		}
+		else
+		{
+			unquotedKeys = _opt('unquotedStrings', false);
+			preferSingleQuotedKeys = _opt('preferSingleQuotedStrings', false);
+		}
+		
+		var output = null;
+
+		if (unquotedKeys && _validKey(input))
+			// see if the key is a valid identifier, if so use it raw.
+			output = input;
+		else if (preferSingleQuotedKeys)
+		{
+			// can use single-quoted keys, find the best candidate
+			var dq = input.indexOf('"') !== -1;
+			var sq = input.indexOf("'") !== -1;
+
+			// for having both or only double quotes, use single.
+			if ((dq && sq) || dq)
+				output = "'" + _fixString(input).replace("'", "\\'") + "'";
+		}
+
+		if (output === null)
+			output = '"' + _fixString(input).replace('"', '\\"') + '"';
+		
+		_str += output;
+	}
+	
+	function _stringifyAny(object)
+	{
+		if (object === null)
+		{
+			_stringifyNull();
+			return;
+		}
+		
+		switch (Object.prototype.toString.call(object))
+		{
+			case '[object Object]':
+				_stringifyObject(object);
+				return;
+			case '[object Array]':
+				_stringifyArray(object);
+				return;
+			case '[object Number]':
+				_stringifyNumber(object);
+				return;
+			case '[object Boolean]':
+				_stringifyBoolean(object);
+				return;
+			case '[object String]':
+			default:
+				_stringifyString(object, false);
+				return;
+		}
+	}
+	
+	function stringify(object, options)
+	{
+		if (options === false)
+			// if options is "false", act like parses' "strict"
+			options = { unquotedKeys: true, unquotedStrings: true, allowNaNInfinite: true };
+		
+		_str = '';
+		_options = options;
+		
+		_stringifyAny(object);
+		
+		// copy so that global _str is cleared. ugly?
+		var copy = _str;
+		_str = null;
+		return copy;
+	}
 
 	return {
 		parse: parse,
-		stringify: JSON.stringify
+		stringify: stringify
 	};
 })();
