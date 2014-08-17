@@ -52,7 +52,7 @@ These two concepts are NOT supported currently, as personally I did not need the
       arraySeparator (string): the separator string used between array elements. Default is ,  
       allowNaNInfinite (bool): whether or not NaNs and Infinites will be stringified as-is. Default is false (outputs nulls).  
       unquotedKeys (bool): whether or not keys in key/value pairs can be unquoted, if possible. Default is false.  
-      unquotedKeys (bool): whether or not string values can be unquoted, if possible. Default is false.  
+      unquotedStrings (bool): whether or not string values can be unquoted, if possible. Default is false.  
       preferSingleQuotedKeys (bool): whether or not keys in key/value pairs can use the single quote character, if possible. Default is false.  
       preferSingleQuotedStrings (bool): whether or not string values can use the single quote character, if possible. Default is false.  
 
