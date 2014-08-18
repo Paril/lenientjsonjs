@@ -20,7 +20,7 @@ Reference
 ### GSON.parse(json (string), [strict (bool)])
 
   json: the string to parse  
-  strict: whether or not to use strict parsing. Default value is true.  
+  strict: whether or not to use strict parsing. Default value is false.  
 
 Parses the requested JSON and returns the parsed object.
 Throws Errors if an error occurs during parsing.
@@ -38,7 +38,7 @@ For reference, this is the current list of supported concepts:
 * Names and values separated by = or => instead of :.
 * Name/value pairs separated by ; instead of ,.
 
-These two concepts are NOT supported currently, as personally I did not need them:
+These concepts are NOT supported currently, as personally I did not need them:
 * Unnecessary array separators. These are interpreted as if null was the omitted value.
 * Streams that include multiple top-level values. With strict parsing, each stream must contain exactly one top-level value.
 * Top-level values of any type. With strict parsing, the top-level value must be an object or an array.
