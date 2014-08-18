@@ -1,0 +1,12 @@
+{
+Test: // value below
+5, Two: /* */ 'Second_Value',
+Array: [ /* value, */ value ],
+/*
+multi line
+*/
+// sup
+Hey: 10,
+# another comment
+Hi: 4040
+}

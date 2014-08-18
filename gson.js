@@ -76,21 +76,8 @@ var GSON = GSON || (function()
 	var _lenientStringBoundary = /["']/;
 	var _lenientControlCharacter = /['"\\/bfnrtu]/;
 	var _lenientKeyValueSeparator = /(:)|(=>)|(=)/;
-	var _lenientSingleLineComment = /(\/\/|#)[^\n]*\n?/;
-	var _lenientBlockComment = /\/\*[\w\W]*\*\//;
+	var _lenientCommentsGlobal = /(?:(?:(?:\/\/)|#).*$)|(?:\/\*[\s\S]*?\*\/)/mg;
 	var _lenientStringStart = /[a-z_$]/i;
-
-	function _checkComment()
-	{
-		var cmt = '/#';
-
-		while (cmt.indexOf(peekChar()) !== -1)
-		{
-			eatRegex(_lenientSingleLineComment);
-			eatRegex(_lenientBlockComment);
-			skipWhitespace();
-		}
-	}
 
 	function _error(str)
 	{
@@ -100,9 +87,6 @@ var GSON = GSON || (function()
 	function _parseString()
 	{
 		skipWhitespace();
-
-		if (!_strict)
-			_checkComment();
 
 		var str = '';
 		var boundary;
@@ -187,9 +171,6 @@ var GSON = GSON || (function()
 	{
 		skipWhitespace();
 
-		if (!_strict)
-			_checkComment();
-
 		if (eatRegex(_startObject) === false)
 			_error('expected {, got ' + peekChar());
 
@@ -198,9 +179,6 @@ var GSON = GSON || (function()
 		while (true)
 		{
 			skipWhitespace();
-
-			if (!_strict)
-				_checkComment();
 
 			if (eatRegex(_endObject))
 				break;
@@ -223,9 +201,6 @@ var GSON = GSON || (function()
 
 			skipWhitespace();
 
-			if (!_strict)
-				_checkComment();
-
 			if (eatRegex(_comma))
 				continue;
 			// "Name/value pairs separated by ; instead of ,."
@@ -244,9 +219,6 @@ var GSON = GSON || (function()
 	{
 		skipWhitespace();
 
-		if (!_strict)
-			_checkComment();
-
 		if (eatRegex(_startArray) === false)
 			_error('expected [, got ' + peekChar());
 
@@ -257,9 +229,6 @@ var GSON = GSON || (function()
 			// todo: "Unnecessary array separators. These are interpreted as if null was the omitted value."
 			skipWhitespace();
 
-			if (!_strict)
-				_checkComment();
-
 			if (eatRegex(_endArray))
 				break;
 
@@ -267,9 +236,6 @@ var GSON = GSON || (function()
 			arr.push(value);
 
 			skipWhitespace();
-
-			if (!_strict)
-				_checkComment();
 
 			if (eatRegex(_comma))
 				continue;
@@ -287,9 +253,6 @@ var GSON = GSON || (function()
 
 	function _parseNumber()
 	{
-		if (!_strict)
-			_checkComment();
-
 		var str;
 
 		if ((str = eatRegex(_number)) === false)
@@ -309,9 +272,6 @@ var GSON = GSON || (function()
 
 	function _parseBoolean()
 	{
-		if (!_strict)
-			_checkComment();
-
 		var str;
 
 		if ((str = eatRegex(_boolean)) === false)
@@ -322,9 +282,6 @@ var GSON = GSON || (function()
 
 	function _parseNull()
 	{
-		if (!_strict)
-			_checkComment();
-
 		if (eatRegex(_null) === false)
 			_error('expected null, got ' + peekChar());
 
@@ -334,9 +291,6 @@ var GSON = GSON || (function()
 	function _parseAny()
 	{
 		skipWhitespace();
-
-		if (!_strict)
-			_checkComment();
 
 		if (peekRegex(_startObject))
 			return _parseObject();
@@ -358,9 +312,6 @@ var GSON = GSON || (function()
 	{
 		skipWhitespace();
 
-		if (!_strict)
-			_checkComment();
-
 		if (peekRegex(_startObject))
 			return _parseObject();
 		else if (peekRegex(_startArray))
@@ -377,7 +328,10 @@ var GSON = GSON || (function()
 		_strict = strict;
 		_depth = 0;
 
-		_json = json;
+		if (!strict)
+			_json = json.replace(_lenientCommentsGlobal, ''); // Single-line comments (// or #) and block-comments (/* */)
+		else
+			_json = json;
 		_pos = 0;
 		_len = json.length;
 
