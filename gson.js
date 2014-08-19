@@ -26,9 +26,9 @@ var GSON = GSON || (function()
 		return _json[_pos];
 	}
 
-	function eatChar(char)
+	function eatChar(c)
 	{
-		if (peekChar() !== char)
+		if (peekChar() !== c)
 			return false;
 
 		return !!(_pos++);
@@ -106,9 +106,9 @@ var GSON = GSON || (function()
 		var stringContainer;
 
 		if (boundary)
-			stringContainer = XRegExp.cache('[^' + boundary + '\\\\]*');
+			stringContainer = new RegExp('[^' + boundary + '\\\\]*');
 		else
-			stringContainer = XRegExp.cache('\\w*');
+			stringContainer = new RegExp('\\w*');
 
 		while (true)
 		{
